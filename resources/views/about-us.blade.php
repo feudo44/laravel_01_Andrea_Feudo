@@ -29,7 +29,7 @@
 
     <nav class="navbar navbar-expand-lg bg-dark border-bottom" data-bs-theme="dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/"><i class="bi bi-camera-reels-fill"></i></a>
+            <a class="navbar-brand" href="{{ route('homepage') }}"><i class="bi bi-camera-reels-fill"></i></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -38,26 +38,21 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                        <a class="nav-link active" aria-current="page" href="{{ route('homepage') }}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/chi-siamo">Chi siamo</a>
+                        <a class="nav-link" href="{{ route('aboutUs') }}">Chi siamo</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/contatti">Contatti</a>
+                        <a class="nav-link" href="{{ route('contacts') }}">Contatti</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
-                            Dropdown
+                            I nostri servizi
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li><a class="dropdown-item" href="{{route('movie.list')}}">Tutti i nostri film</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -85,6 +80,25 @@
             </div>
         </div>
     </header>
+
+    <section>
+        <div class="container userHeight">
+            <div class="row h-100 justify-content-around align-items-center">
+                @foreach ($users as $user)
+                    <div class="col-12 col-md-4">
+                        <div class="card" style="width: 18rem;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{$user['name']}} {{ $user['surname'] }}</h5>
+                                <h6 class="card-subtitle mb-2 text-body-secondary">{{ $user['role'] }}</h6>
+                                <a href="{{ route('aboutUsDetail', ['name' => $user['name']]) }}" class="card-link">Leggi di
+                                    più</a>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
 
 
 

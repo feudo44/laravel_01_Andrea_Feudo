@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Contatti</title>
+    <title>MovieMania</title>
 
     <!-- CSS Bootrstrap -->
 
@@ -14,6 +14,7 @@
     <!-- Bootstrap icons -->
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
 
     <!-- My CSS -->
 
@@ -63,61 +64,15 @@
 
     <header>
         <div class="container-fluid header">
-            <div class="row h-100 justify-content-around align-items-center">
-                <div class="col-12 h-25 justify-content-center align-items-center">
-                    <h2 class="text-white text-color display-5 text-center">Contattaci</h2>
-                </div>
-                <div
-                    class="col-md-3 text-center box d-flex flex-column justify-content-center align-items-center text-white">
-                    <div class="row">
-                        <div class="col-12">
-                            <i class="icon bi bi-whatsapp"></i>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <p>Scrivici su whatsapp</p>
-                        </div>
-
-                    </div>
-
-
-                </div>
-                <div
-                    class="col-md-3 text-center box d-flex flex-column justify-content-center align-items-center text-white">
-                    <div class="row">
-                        <div class="col-12">
-                            <i class="icon bi bi-instagram"></i>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <p>Seguici su instagram</p>
-                        </div>
-                    </div>
-
-
-
-                </div>
-                <div
-                    class="col-md-3 text-center box d-flex flex-column justify-content-center align-items-center text-white">
-                    <div class="row">
-                        <div class="col-12">
-                            <i class="icon bi bi-facebook"></i>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <p>Seguici su Facebook</p>
-                        </div>
-                    </div>
-
-
-
+            <div class="row h-100 justify-content-center align-items-center">
+                <div class="col-md-6 col-12">
+                    <h3 class="text-white text-center text-color">{{ $user['name'] }} {{ $user['surname'] }}</h3>
+                    <h4 class="text-white text-center text-color"> {{ $user['role'] }}</h4>
                 </div>
             </div>
         </div>
     </header>
+
 
 
 
