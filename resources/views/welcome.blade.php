@@ -16,6 +16,11 @@
                     {{ session('emailError') }}
                 </div>
             @endif
+            @if (session()->has('successMessage'))
+                <div class="alert alert-success">
+                    {{ session('successMessage') }}
+                </div>
+            @endif
             <div class="row h-100">
                 <div class="col-12 d-flex justify-content-center align-items-center">
                     <h1 class="text-light display-1 fw-bold text-color">MOVIEMANIA</h1>
