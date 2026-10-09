@@ -4,10 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\MovieRequest;
 use App\Models\Movie;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-
-class MovieController extends Controller
+class MovieController extends Controller implements HasMiddleware
 {
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('auth', except: ['movieList']),
+        ];
+    }
+
     // public $movies = [
     //     ['id' => '1', 'title' => 'Incontri ravvicinati del terzo tipo', 'director' => 'S. Spielberg', 'img' => '/media/poster/Spielberg.jpg', 'genres' => 'Sci-fi'],
     //     ['id' => '2', 'title' => '1917', 'director' => 'S. Mendes', 'img' => '/media/poster/1917.jpg', 'genres' => 'Guerra'],
@@ -15,10 +23,12 @@ class MovieController extends Controller
     //     ['id' => '4', 'title' => 'Barbie', 'director' => 'G. Gerwig', 'img' => '/media/poster/Barbie.jpg', 'genres' => 'Avventura'],
     //     ['id' => '5', 'title' => 'Lost in translation', 'director' => 'S. Coppola', 'img' => '/media/poster/Coppola.jpg', 'genres' => 'Drammatico']
     // ];
+
     public function movieList()
     {
         $movies = Movie::all();
-        return view('movie.movies', ['movies'=> $movies]);
+
+        return view('movie.movies', ['movies' => $movies]);
     }
 
     // public function movieDetail($id)
@@ -30,22 +40,23 @@ class MovieController extends Controller
     //     }
     // }
 
-    public function create(){
+    public function create()
+    {
         return view('movie.create');
     }
 
-    public function store(MovieRequest $request){
+    public function store(MovieRequest $request)
+    {
         $movie = Movie::create([
             'title' => $request->title,
             'director' => $request->director,
             'year' => $request->year,
             'plot' => $request->plot,
-            'img'=> $request->file('img')->store('images', 'public'),
-            
+            'img' => $request->file('img')->store('images', 'public'),
         ]);
 
-        
-
-        return redirect()->route('homepage')->with('successMessage', 'Hai correttamente inserito il tuo film');
+        return redirect()
+            ->route('homepage')
+            ->with('successMessage', 'Hai correttamente inserito il tuo film');
     }
 }
