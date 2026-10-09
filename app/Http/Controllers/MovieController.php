@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MovieRequest;
 use App\Models\Movie;
 use Illuminate\Http\Request;
 
@@ -33,12 +34,13 @@ class MovieController extends Controller
         return view('movie.create');
     }
 
-    public function store(Request $request){
+    public function store(MovieRequest $request){
         $movie = Movie::create([
             'title' => $request->title,
             'director' => $request->director,
             'year' => $request->year,
-            'plot' => $request->plot
+            'plot' => $request->plot,
+            'img'=> $request->file('img')->store('images', 'public'),
             
         ]);
 

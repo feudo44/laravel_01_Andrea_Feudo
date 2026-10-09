@@ -8,6 +8,6 @@ class Movie extends Model
 {
     use HasFactory;
     protected $fillable = [
-        "title", 'director', 'year', 'plot'
+        "title", 'director', 'year', 'plot', 'img'
     ];
 }
