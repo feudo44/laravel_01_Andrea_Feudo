@@ -5,12 +5,15 @@
 
         <img src="{{Storage::url($movie->img)}}" class="card-img-top cardImg img-fluid" alt="poster di '{{ $title }}'">
     @endif
-    
+
     <div class="card-body">
         <h5 class="card-title">{{$title}}</h5>
         <h5 class="card-title muted">{{$movie['director']}}</h5>
         <p class="card-text">{{ $movie['genres'] }}</p>
-        <a href="#" class="btn btn-primary">Leggi di
+        <a href="{{ route('movie.show', compact('movie')) }}" class="btn btn-primary">Leggi di
             più</a>
+        <a href="{{ route('movie.edit', compact('movie')) }}" class="btn btn-primary">
+            Modifica il film
+        </a>
     </div>
 </div>

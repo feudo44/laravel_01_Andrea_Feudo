@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MovieEditRequest;
 use App\Http\Requests\MovieRequest;
 use App\Models\Movie;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 
 class MovieController extends Controller implements HasMiddleware
 {
+    // Middleware per proteggere le rotte
     public static function middleware(): array
     {
         return [
@@ -16,14 +19,7 @@ class MovieController extends Controller implements HasMiddleware
         ];
     }
 
-    // public $movies = [
-    //     ['id' => '1', 'title' => 'Incontri ravvicinati del terzo tipo', 'director' => 'S. Spielberg', 'img' => '/media/poster/Spielberg.jpg', 'genres' => 'Sci-fi'],
-    //     ['id' => '2', 'title' => '1917', 'director' => 'S. Mendes', 'img' => '/media/poster/1917.jpg', 'genres' => 'Guerra'],
-    //     ['id' => '3', 'title' => 'Quei bravi ragazzi', 'director' => 'M. Scorsese', 'img' => '/media/poster/Scorsese.jpg', 'genres' => 'Noir'],
-    //     ['id' => '4', 'title' => 'Barbie', 'director' => 'G. Gerwig', 'img' => '/media/poster/Barbie.jpg', 'genres' => 'Avventura'],
-    //     ['id' => '5', 'title' => 'Lost in translation', 'director' => 'S. Coppola', 'img' => '/media/poster/Coppola.jpg', 'genres' => 'Drammatico']
-    // ];
-
+    // Visualizzazione della lista dei film
     public function movieList()
     {
         $movies = Movie::all();
@@ -31,20 +27,21 @@ class MovieController extends Controller implements HasMiddleware
         return view('movie.movies', ['movies' => $movies]);
     }
 
-    // public function movieDetail($id)
-    // {
-    //     foreach ($this->movies as $movie) {
-    //         if ($id == $movie['id']) {
-    //             return view('movie.movie-detail', ['movie' => $movie]);
-    //         }
-    //     }
-    // }
+    // Visualizzazione di tutti i film
+    public function index()
+    {
+        $movies = Movie::all();
 
+        return view('movie.index', compact('movies'));
+    }
+
+    // Visualizzazione del form per creare un film
     public function create()
     {
         return view('movie.create');
     }
 
+    // Salvataggio di un nuovo film
     public function store(MovieRequest $request)
     {
         $movie = Movie::create([
@@ -58,5 +55,45 @@ class MovieController extends Controller implements HasMiddleware
         return redirect()
             ->route('homepage')
             ->with('successMessage', 'Hai correttamente inserito il tuo film');
+    }
+
+    // Visualizzazione dei dettagli di un film
+    public function show(Movie $movie)
+    {
+        return view('movie.show', compact('movie'));
+    }
+
+    // Visualizzazione del form per modificare un film
+    public function edit(Movie $movie)
+    {
+        return view('movie.edit', compact('movie'));
+    }
+
+    // Aggiornamento di un film
+    public function update(MovieEditRequest $request, Movie $movie)
+    {
+        $movie->update([
+            'title' => $request->title,
+            'director' => $request->director,
+            'year' => $request->year,
+            'plot' => $request->plot,
+        ]);
+
+        // Controlla se è stata caricata una nuova immagine
+        if ($request->hasFile('img')) {
+            $request->validate(['img' => 'image']);
+            $movie->update([
+                'img' => $request->file('img')->store('images', 'public'),
+            ]);
+        }
+
+        return redirect()
+            ->route('homepage')
+            ->with('successMessage', 'Hai correttamente modificato il tuo film');
+    }
+
+    public function destroy(Movie $movie){
+        $movie->delete();
+        return redirect()->route('homepage')->with('successMessage','Hai correttamente eliminato il film');
     }
 }
