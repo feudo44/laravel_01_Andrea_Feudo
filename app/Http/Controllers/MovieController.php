@@ -8,6 +8,7 @@ use App\Models\Movie;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\Auth;
 
 class MovieController extends Controller implements HasMiddleware
 {
@@ -50,6 +51,7 @@ class MovieController extends Controller implements HasMiddleware
             'year' => $request->year,
             'plot' => $request->plot,
             'img' => $request->file('img')->store('images', 'public'),
+            'user_id' => Auth::user()->id
         ]);
 
         return redirect()
@@ -66,13 +68,19 @@ class MovieController extends Controller implements HasMiddleware
     // Visualizzazione del form per modificare un film
     public function edit(Movie $movie)
     {
-        return view('movie.edit', compact('movie'));
+        if ($movie->user_id == Auth::user()->id) {
+            return view('movie.edit', compact('movie'));
+        }else{
+            return redirect()->route('homepage')->with('errorMessage','Non puoi vedere questa pagina');
+        }
+
     }
 
     // Aggiornamento di un film
     public function update(MovieEditRequest $request, Movie $movie)
     {
-        $movie->update([
+        if($movie->user_id == Auth::user()->id)
+        {$movie->update([
             'title' => $request->title,
             'director' => $request->director,
             'year' => $request->year,
@@ -89,11 +97,17 @@ class MovieController extends Controller implements HasMiddleware
 
         return redirect()
             ->route('homepage')
-            ->with('successMessage', 'Hai correttamente modificato il tuo film');
+            ->with('successMessage', 'Hai correttamente modificato il tuo film');}else{
+                return redirect()->route('homepage')->with('errorMessage','Non puoi vedere questa pagina');
+            }
     }
 
-    public function destroy(Movie $movie){
-        $movie->delete();
-        return redirect()->route('homepage')->with('successMessage','Hai correttamente eliminato il film');
+    public function destroy(Movie $movie)
+    {
+        if ($movie->user_id == Auth::user()->id)
+        {$movie->delete();
+        return redirect()->route('homepage')->with('successMessage', 'Hai correttamente eliminato il film');}else{
+            return redirect()->route('homepage')->with('errorMessage','Non puoi vedere questa pagina');
+        }
     }
 }
