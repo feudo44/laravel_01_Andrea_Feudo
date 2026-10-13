@@ -7,6 +7,15 @@
                 <h4>Anno: {{ $movie->year }}</h4>
                 <p>{{ $movie->plot }}</p>
                 <p>Creato da: {{ $movie->user?->name ?? 'Utente sconosciuto' }}</p>
+                <ul>
+                    @forelse ($movie->genres as $genre)
+                        <li>{{ $genre->name }}</li>
+                    @empty
+
+                    @endforelse
+                </ul>
+
+                
             </div>
 
             <div class="col-12 col-md-6 text-center">

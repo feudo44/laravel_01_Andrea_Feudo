@@ -10,6 +10,16 @@
         <h5 class="card-title">{{ $movie->title }}</h5>
         <h5 class="card-title muted">{{ $movie->director }}</h5>
         <p class="card-text">Creato da: {{ $movie->user?->name ?? 'Utente sconosciuto' }}</p>
+        <div class="d-flex">
+            @forelse ($movie->genres as $genre)
+            @if($loop->last)
+                <a href="{{ route('genre.show' , compact('genre')) }}" class="card-text small text-capitalize mx-1">{{ $genre->name }}, </a>
+                @else
+                <a href="{{ route('genre.show' , compact('genre')) }} " class="card-text small text-capitalize mx-1">{{ $genre->name }} </a>
+                @endif
+            @empty
+            @endforelse
+        </div>
 
         <a href="{{ route('movie.show', $movie) }}" class="btn btn-primary">Leggi di più</a>
 

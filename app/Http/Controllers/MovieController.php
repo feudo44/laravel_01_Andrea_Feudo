@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\MovieEditRequest;
 use App\Http\Requests\MovieRequest;
+use App\Models\Genre;
 use App\Models\Movie;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -39,7 +40,8 @@ class MovieController extends Controller implements HasMiddleware
     // Visualizzazione del form per creare un film
     public function create()
     {
-        return view('movie.create');
+        $genres = Genre::all();
+        return view('movie.create', compact('genres'));
     }
 
     // Salvataggio di un nuovo film
@@ -53,6 +55,8 @@ class MovieController extends Controller implements HasMiddleware
             'img' => $request->file('img')->store('images', 'public'),
             'user_id' => Auth::user()->id
         ]);
+
+        $movie->genres()->attach($request->genres);
 
         return redirect()
             ->route('homepage')
