@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class MovieController extends Controller implements HasMiddleware
 {
@@ -74,8 +75,8 @@ class MovieController extends Controller implements HasMiddleware
     {
         if ($movie->user_id == Auth::user()->id) {
             return view('movie.edit', compact('movie'));
-        }else{
-            return redirect()->route('homepage')->with('errorMessage','Non puoi vedere questa pagina');
+        } else {
+            return redirect()->route('homepage')->with('errorMessage', 'Non puoi vedere questa pagina');
         }
 
     }
@@ -83,35 +84,46 @@ class MovieController extends Controller implements HasMiddleware
     // Aggiornamento di un film
     public function update(MovieEditRequest $request, Movie $movie)
     {
-        if($movie->user_id == Auth::user()->id)
-        {$movie->update([
-            'title' => $request->title,
-            'director' => $request->director,
-            'year' => $request->year,
-            'plot' => $request->plot,
-        ]);
-
-        // Controlla se è stata caricata una nuova immagine
-        if ($request->hasFile('img')) {
-            $request->validate(['img' => 'image']);
+        if ($movie->user_id == Auth::user()->id) {
             $movie->update([
-                'img' => $request->file('img')->store('images', 'public'),
+                'title' => $request->title,
+                'director' => $request->director,
+                'year' => $request->year,
+                'plot' => $request->plot,
             ]);
-        }
 
-        return redirect()
-            ->route('homepage')
-            ->with('successMessage', 'Hai correttamente modificato il tuo film');}else{
-                return redirect()->route('homepage')->with('errorMessage','Non puoi vedere questa pagina');
+            // Controlla se è stata caricata una nuova immagine
+            if ($request->hasFile('img')) {
+                $request->validate(['img' => 'image']);
+                $movie->update([
+                    'img' => $request->file('img')->store('images', 'public'),
+                ]);
             }
+
+            return redirect()
+                ->route('homepage')
+                ->with('successMessage', 'Hai correttamente modificato il tuo film');
+        } else {
+            return redirect()->route('homepage')->with('errorMessage', 'Non puoi vedere questa pagina');
+        }
     }
 
     public function destroy(Movie $movie)
     {
-        if ($movie->user_id == Auth::user()->id)
-        {$movie->delete();
-        return redirect()->route('homepage')->with('successMessage', 'Hai correttamente eliminato il film');}else{
-            return redirect()->route('homepage')->with('errorMessage','Non puoi vedere questa pagina');
+        if ($movie->user_id == Auth::user()->id) {
+            // sgancia i generi dalla tabella pivot
+            $movie->genres()->detach();
+
+            // elimina anche l'immagine dallo storage
+            if ($movie->img) {
+                Storage::disk('public')->delete($movie->img);
+            }
+
+            $movie->delete();
+
+            return redirect()->route('homepage')->with('successMessage', 'Hai correttamente eliminato il film');
+        } else {
+            return redirect()->route('homepage')->with('errorMessage', 'Non puoi vedere questa pagina');
         }
     }
 }
